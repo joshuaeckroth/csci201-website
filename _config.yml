@@ -1,0 +1,9 @@
+safe: true
+markdown: rdiscount
+rdiscount:
+  extensions: [smart]
+highlighter: pygments
+permalink: none
+gems:
+  - jemoji
+

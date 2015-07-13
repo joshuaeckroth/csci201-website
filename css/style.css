@@ -1,0 +1,236 @@
+html, * {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: #111;
+    font-size: 18px;
+    font-family: "Anaheim", sans-serif;
+    line-height: 1.25;
+    padding: 20px;
+    background: #fff;
+}
+
+#container-tight {
+    margin: 0 auto;
+    max-width: 850px;
+}
+
+h1 {
+    margin-bottom: 0.5em;
+}
+
+h2, h3, h4, h5, h6 {
+    margin: 0.25em 0;
+}
+
+#index h2 {
+    margin-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: rgb(238, 122, 40);
+    font-family: "VT323", monospace;
+}
+
+h1 {
+    font-size: 44px;
+}
+
+h2 {
+    font-size: 36px;
+}
+
+h3 {
+    font-size: 32px;
+}
+
+h4 {
+    font-size: 30px;
+}
+
+h5 {
+    font-size: 28px;
+}
+
+strong {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+p {
+    margin: 0.8em 0;
+}
+
+ul, ol {
+    margin-left: 2em;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+ul.posts {
+    margin-left: 0;
+}
+
+a, a:visited, a:active, a:hover {
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(37, 170, 54);
+}
+
+table#index {
+    margin: 0;
+    border: none;
+    width: 100%;
+}
+
+table#index td {
+    vertical-align: top;
+}
+
+td#posts {
+    width: 80%;
+}
+
+td#metabox {
+    width: 20%;
+}
+
+td#metabox a,
+td#metabox a:visited,
+td#metabox a:active,
+td#metabox a:hover {
+    color: #fff;
+}
+
+td#metabox {
+    background: rgb(238, 122, 40);
+    color: #fff;
+    padding: 10px;
+}
+
+td#metabox h1.classname {
+    color: #fff;
+}
+
+td#metabox h2.semester {
+    margin-top: -20px;
+    color: #fff;
+}
+
+td#metabox div.email {
+    margin: 20px 0;
+}
+
+td#metabox div.officehours {
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.post-title {
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+.post-categories {
+    color: #616161;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.post-date {
+    color: #e0e0e0;
+    margin-right: 10px;
+}
+
+.post-due {
+    color: #616161;
+}
+
+ul.posts li {
+    margin: 0.25em 0;
+    display: block;
+}
+
+div.license {
+    font-size: 12px;
+    clear: both;
+    padding-top: 20px;
+}
+
+div.metatop {
+    width: 5em;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    float: right;
+    text-align: right;
+}
+
+div.metatop span.homelink {
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 480px) {
+    div.metabox {
+        float: none;
+    }
+}
+
+table {
+    margin: 0 auto;
+    border: 1px solid rgb(37, 170, 54);;
+}
+
+td {
+    padding: 5px;
+}
+
+thead th {
+    padding: 10px 5px;
+}
+
+table#toc {
+    margin: 0;
+}
+
+pre {
+    border-left: 4px solid rgb(37, 170, 54);
+    padding-left: 15px;
+    margin: 2em 0;
+}
+
+pre, code, tt {
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
+}
+
+code {
+    border: 1px dotted rgb(37, 170, 54);;
+    padding: 2px;
+}
+
+pre code {
+    border: none;
+    padding: 0;
+}
+
+blockquote {
+    border-left: 4px solid rgb(37, 170, 54);;
+    padding-left: 15px;
+    margin: 2em 0;
+    padding-left: 30px;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+img.emoji {
+    display: inline;
+}
+
+
