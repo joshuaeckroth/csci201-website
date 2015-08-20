@@ -17,10 +17,11 @@ Work hard in this class and you should be able to:
 ## About me
 
 - Joshua Eckroth, [jeckroth@stetson.edu](mailto:jeckroth@stetson.edu)
-
 - Eliz Hall 214-9, 386-740-2519
-
-- Office hours: Mon, Wed, Fri: 12p-1:30p; Wed: 2:30p-3:30p 
+- Office hours:
+  - Mon: 12-1:30
+  - Wed: 12-1:30, 2:30-3:30
+  - Fri: 11-12
 
 ## Textbook
 
@@ -33,19 +34,19 @@ Work hard in this class and you should be able to:
 
 ### Projects
 
-Projects are individual activities. You will turn in your materials via [git](/cookbook/git.html) and [Bitbucket](http://bitbucket.org). See the [RStudio workflow](/notes/rstudio-workflow.html) and [Hadoop workflow](/notes/hadoop-workflow.html) notes for details.
+Projects are individual activities. You will turn in your materials via git and Bitbucket.
 
 Assignments are scored out of 5 points.
 
 ### Late work
 
-Due to the complexity of these assignments and the timing of group work, I will only accept late work up to three days late. Late work is penalized 40%.
+Late work is accepted until the day before the final exam. Late work is penalized 40%.
 
 ## Honor code
 
-You are allowed to a small amount of code from websites (assuming the code is open source) and our book. You must indicate where you got the code (put a comment in the code). More than 50% of your work must be original.
+You may not make use of any code found on websites (excluding this website). You may use code found in our book.
 
-I am strongly in agreement with the [Stetson University Honor Code](http://www.stetson.edu/other/honor-system/). Any form of cheating is not acceptable, will not be tolerated, and could lead to dismissal from the University. This includes plagiarism of any sort on quizzes, exams, or on projects. So please, do not cheat!
+I am strongly in agreement with the [Stetson University Honor Code](http://www.stetson.edu/other/honor-system/). Any form of cheating is not acceptable, will not be tolerated, and could lead to dismissal from the University. This includes plagiarism of any sort on projects or the final exam.
 
 ## Academic success center
 

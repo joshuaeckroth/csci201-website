@@ -6,8 +6,8 @@ html, * {
 body {
     color: #111;
     font-size: 18px;
-    font-family: "Anaheim", sans-serif;
-    line-height: 1.25;
+    font-family: "Cutive Mono", sans-serif;
+    line-height: 1.15;
     padding: 20px;
     background: #fff;
 }
@@ -68,7 +68,7 @@ ul, ol {
 }
 
 li {
-    margin: 0.5em 0;
+    margin: 0.25em 0;
 }
 
 ul.posts {
@@ -127,7 +127,6 @@ td#metabox div.email {
 
 td#metabox div.officehours {
     margin: 20px 0;
-    font-size: 14px;
 }
 
 .post-title {
@@ -151,7 +150,7 @@ td#metabox div.officehours {
 }
 
 ul.posts li {
-    margin: 0.25em 0;
+    margin: 0.15em 0;
     display: block;
 }
 
@@ -203,8 +202,8 @@ pre {
 }
 
 pre, code, tt {
-    font-family: "Roboto Mono", monospace;
-    font-size: 14px;
+    font-family: "Cutive Mono", monospace;
+    font-size: 16px;
 }
 
 code {
