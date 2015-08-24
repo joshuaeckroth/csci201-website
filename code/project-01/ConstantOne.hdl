@@ -1,11 +1,10 @@
 
 /**
- * Constant one gate: a and b inputs, output is always 1
- * Obviously, there is no reason to have two inputs. Oh well.
+ * Constant one gate: given input a, output is always 1
  */
 
 CHIP ConstantOne {
-    IN a, b;
+    IN a;
     OUT out;
 
     PARTS:

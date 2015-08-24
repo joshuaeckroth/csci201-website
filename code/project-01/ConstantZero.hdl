@@ -1,11 +1,10 @@
 
 /**
- * Constant zero gate: a and b inputs, output is always 0
- * Obviously, there is no reason to have two inputs. Oh well.
+ * Constant zero gate: given input a, output is always 0
  */
 
 CHIP ConstantZero {
-    IN a, b;
+    IN a;
     OUT out;
 
     PARTS:
