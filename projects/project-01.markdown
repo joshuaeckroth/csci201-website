@@ -7,7 +7,9 @@ categories: [projects]
 
 # Project 1
 
-**Read Chapter 1 and Appendix A.**
+- **Read Chapter 1 and Appendix A.**
+
+- Create a repository on Bitbucket named exactly `csci201-project-01`. Invite me (`joshuaeckroth`) as a reader.
 
 Implement the following logic gates by writing an HDL file for each. Start with the HDL templates provided. Be sure to test your implementations with the corresponding test scripts.
 
