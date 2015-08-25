@@ -18,7 +18,7 @@ How to create a Bitbucket account:
 3. Create a repository. Call it "csci201-project-01". Make sure it is a "private" repository.
 
 4. Now, follow the "basic workflow" instructions in the
-   [git](/lecture/git.html) notes to create a repository and push it
+   [git](/notess/git.html) notes to create a repository and push it
    to Bitbucket.
 
 5. Back at Bitbucket, refresh the page so you can see your committed
