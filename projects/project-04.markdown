@@ -10,7 +10,7 @@ categories: [projects]
 - **Read Chapter 4 and the [Assembly Language notes](/notes/assembly-language.html).**
   - Here are some free chapters: [http://www.nand2tetris.org/chapters/](http://www.nand2tetris.org/chapters/)
 
-- Create a repository on Bitbucket named exactly `csci201-project-03`. Invite me (`joshuaeckroth`) as a reader.
+- Create a repository on Bitbucket named exactly `csci201-project-04`. Invite me (`joshuaeckroth`) as a reader.
 
 Write the following programs in the Hack assembly language. Test your programs with the supplied test scripts in the CPU Emulator program.
 
