@@ -143,3 +143,36 @@ M=D
 0;JMP
 ```
 
+### Sum list
+
+```
+// sum a list
+
+// RAM[0] will hold the sum (it holds meaningless data at first)
+// RAM[1] says final position of values
+// RAM[2] is start of values
+
+@0
+M=0
+
+(NEXT)
+@0
+D=M
+@1
+A=M
+D=D+M // add value at end of list
+@0    // save back to RAM[0]
+M=D
+
+@1
+MD=M-1
+D=D-1
+@DONE
+D;JEQ
+@NEXT
+0;JMP
+
+(DONE)
+@DONE
+0;JMP
+```

@@ -5,7 +5,7 @@ title: Simulators
 
 # Simulators
 
-Download: [csci201-simulators-v2.6.zip](/csci201-simulators-v2.6.zip)
+Download: [csci201-simulators-v2.7.zip](/csci201-simulators-v2.7.zip)
 
 This package consists of three graphical simulators:
 
