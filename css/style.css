@@ -208,12 +208,14 @@ pre, code, tt {
 
 code {
     border: 1px dotted rgb(37, 170, 54);;
-    padding: 2px;
+    padding: 1px;
+    white-space: nowrap;
 }
 
 pre code {
     border: none;
     padding: 0;
+    white-space: pre;
 }
 
 blockquote {

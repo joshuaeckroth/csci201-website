@@ -26,15 +26,8 @@ Grading will depend on how close to 190 lines you are able to get. Extra credit 
 
 ## Task 2
 
-Stay tuned.
-
-{% comment %}
-## Task 2
-
-In this task, you will rewrite programs we developed in class in MIPS assembly language.
+In this task, you will rewrite programs we developed in class in MIPS assembly language. Those programs are found on the [assembly language](/notes/assembly-language.html) notes.
 
 Download the [QtSpim MIPS Simulator](http://sourceforge.net/projects/spimsimulator/files/). The tool's main page is [here](http://spimsimulator.sourceforge.net/).
 
 You will use MIPS32 assembly language, designed for the MIPS processor (used in the Nintendo 64; PlayStation, PS 2, and PS Portable; and millions of other devices).
-
-{% endcomment %}

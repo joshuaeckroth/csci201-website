@@ -176,3 +176,181 @@ D;JEQ
 @DONE
 0;JMP
 ```
+
+## MIPS assembly language
+
+The MIPS32 processor has the following features:
+
+- 32-bit words (4-bytes per word)
+- 32 registers (some have special purposes)
+- RISC design (reduced instruction set computer)
+
+RISC was a revolution in the 80's, and the MIPS chip was the first of its kind. A RISC chip differs from a CISC chip (complex instruction set computer) in that a RISC chip supports a small number of operations (read/write memory, ALU operations, jumps) and the operations are used in a very consistent way. For example, every ALU operation has exactly three arguments: the destination register and the two source registers. There are no ALU instructions that are capable of reading/writing memory. Data from memory can be loaded/stored into/out of registers and from/to memory using dedicated instructions. The idea is that if the instructions are very minimal and consistently designed, and more registers are available (32 instead of 10 or so in CISC chips at the time), then each instruction can be made very fast (due to its simplicity) and therefore the chip can be faster.
+
+Intel chips are common examples of CISC chips (although modern Intel chips have RISC-like cores). There were some very complex CISC chips in the 80's, like the VAX chip, which included instructions like `movsb` (copy string; Intel chip) and `insque` (insert into queue; VAX chip). On a RISC chip, those kinds of instructions would require several individual instructions including jumps (for loops).
+
+The assembly language used by our book is extremely simple, but not so pristine as RISC. We have instructions that read/write memory while also performing ALU operations, for example. So it's CISC-like in that way.
+
+### MIPS registers
+
+| Register ID | Register Name | Description |
+| ----------- | ------------- | ----------- |
+| `$0`        | `$zero`       | read-only, always has value 0 |
+| `$1`        | `$at`         | "assembler temporary"; not available for use |
+| `$2 - $3`   | `$v0 - $v1`   | "values", used for function return values |
+| `$4 - $7`   | `$a0 - $a3`   | "arguments", used for function calls |
+| `$8 - $15`  | `$t0 - $t7`   | "temporaries", **these are ones you'll use most** |
+| `$16 - $23` | `$s0 - $s7`   | "saved values", used for function calls |
+| `$24 - $25` | `$t8 - $t9`   | more temporary registers |
+| `$26 - $27` | `$k0 - $k1`   | reserved |
+| `$28`       | `$gp`         | "global pointer", points to data available for all functions |
+| `$29`       | `$sp`         | "stack pointer", points to top of stack |
+| `$30`       | `$fp`         | "frame pointer", points to base of stack for current function |
+| `$31`       | `$ra`         | "return address", points to jump address for calling function |
+
+You'll use registers `$t0` through `$t7`. Many of the other registers have special purposes related to function calls. (Yes, you can call functions in assembly language.) We'll talk about function calls later in the course.
+
+### MIPS instructions
+
+RISC chips can be tedious to program by-hand, since the instructions are so simple. Thus, there do exist some "psuedo" instructions that actually turn into several simple instructions when the assembly source code is translated to machine code.
+
+Below, I list the instructions we care about. Note that anything with a `$` means "register", e.g., `$t0`.
+
+#### ALU instructions
+
+| Instruction | English name | Meaning |
+| ----------- | ------------ | ------- |
+| `add $a, $b, $c` | Add | `$a = $b + $c` |
+| `addi $a, $b, N` | Add immediate | `$a = $b + N` (`N` is a number) |
+| `sub $a, $b, $c` | Subtract | `$a = $b - $c`; to subtract a particular value like `N`, use `addi $a, $b, -N` |
+| `mul $a, $b, $c` | Multiply | `$a = $b * $c`; note, only first 32-bits of result are saved (multiply of two 32-bit values can result in a 64-bit value; don't multiply big numbers this way) |
+| `div $a, $b, $c` | Divide (quotient) | `$a = $b / $c` |
+| `rem $a, $b, $c` | Remainder (modulo) | `$a = $b % $c` |
+| `and $a, $b, $c` | Bit-wise And | `$a = $b & $c` |
+| `or $a, $b, $c` | Bit-wise Or | `$a = $b | $c` |
+| `xor $a, $b, $c` | Bit-wise Xor | `$a = $b ^ $c` |
+| `nor $a, $b, $c` | Bit-wise Nor | `$a = ~($b | $c)` |
+| `slt $a, $b, $c` | Set-on-less-than | `$a = ($b < $c)` |
+| `slti $a, $b, N` | Set-on-less-than-immediate | `$a = ($b < N)` |
+| `move $a, $b` | Move (copy) register | `$a = $b` |
+| `clear $a` | Clear (erase) register | `$a = 0` |
+
+#### Memory instructions
+
+| Instruction | English name | Meaning |
+| ----------- | ------------ | ------- |
+| `lw $a, N($b)` | Load word | Load 32-bit value into register `$a` from memory location computed as `$b + N`; often, `N=0`, and can be omitted: `lw $a, ($b)` |
+| `la $a, label` | Load address of a label | `$a = label`, where label is some label in code or `.data` section (see below) |
+| `li $a, N` | Load immediate value | `$a = N`, where `N` is just a number, like 52 |
+| `sw $a, N($b)` | Store word | Store 32-bit value from register `$a` into memory location computed as `$b + N`; often, `N=0`, and can be omitted: `sw $a, ($b)` |
+
+#### Jump instructions
+
+In most processors, including MIPS, there are two kinds of jumps: those known as jumps, and those known as "branches." When both terms are used, jumps are always unconditional, while branches are always conditional.
+
+When a number `N` is used below, that number can be an actual integer (e.g., 52) or, more likely, the name of a label from your code.
+
+| Instruction | English name | Meaning |
+| ----------- | ------------ | ------- |
+| `jr $a`     | Jump register | Jumps to address in `$a` |
+| `j N`       | Jump          | Jumps to address `N` (often `N` is a label) |
+| `beq $a, $b, N` | Branch on equal | Jumps to `N` if `$a = $b` |
+| `bne $a, $b, N` | Branch on not-equal | Jumps to `N` if `$a != $b` |
+| `blt $a, $b, N` | Branch on less-than | Jumps to `N` if `$a < $b` |
+| `ble $a, $b, N` | Branch on less-than-or-equal | Jumps to `N` if `$a <= $b` |
+| `bgt $a, $b, N` | Branch on greater-than | Jumps to `N` if `$a > $b` |
+| `bge $a, $b, N` | Branch on greater-than-or-equal | Jumps to `N` if `$a >= $b` |
+
+#### Data and RAM
+
+Unlike the assembly language from our textbook, a MIPS chip does not have separate ROM and RAM sections of memory. Instead, in each program, you declare (at the top) what your RAM memory will be (indicated by `.data`), and your program code will automatically occupy ROM (indicated by `.text`).
+
+You can label the different parts of your program's RAM. Here is an example:
+
+```
+.data
+count: .word 20  # make 'count' a variable (32-bits, 1 word) with initial value 20
+vals:  .word 8, -2, 3, 7, 2 # make 'vals' an array of 5 words, with initial values given
+```
+
+To access these values, use `lw` on regular values (not arrays), and `la` on arrays:
+
+```
+lw $t0, count    # load value of 'count' (20) into $t0
+la $t1, vals     # load address of start of array 'vals' into $t1
+lw $t2, ($t1)    # load first element in array 'vals' (8) into $t2
+lw $t2, 4($t1)   # load second element (4-bytes beyond first address)
+lw $t2, 8($t1)   # load third element (4-bytes beyond first address)
+```
+
+You can also iterate through an array but using another register as the address, and always adding 4 to it to get the next address:
+
+```
+la $t1, vals
+lw $t2, ($t1)     # load first value
+addi $t1, $t1, 4  # generate next address
+lw $t2, ($t1)     # load second value
+addi $t1, $t1, 4  # generate next address
+...etc...
+```
+
+In order to save values back into variables, load the address first and then store the value:
+
+```
+la $t0, count     # get address of count variable
+sw $t4, ($t0)     # save value in $t4 to count variable (using its address)
+```
+
+### Template of a MIPS assembly language program
+
+```
+.data
+# sepecification of program's RAM data...
+
+.text
+.globl main
+
+main:             # this label is required; your program starts here
+
+       ...code...
+
+       jr $ra     # always need this at the end; it terminates your program
+```
+
+### SPIM simulator
+
+Download the [QtSpim MIPS Simulator](http://sourceforge.net/projects/spimsimulator/files/). The tool's main page is [here](http://spimsimulator.sourceforge.net/).
+
+In the following example, I load and run this (pointless) program:
+
+```
+.data
+        count:  .word 52
+        vals:   .word 1, 2, 3, 4, 5
+.text
+.globl main
+
+main:
+        lw $t6, count
+        addi $t0, $zero, 3       # a = 3
+        addi $t1, $zero, 2       # b = 2
+        add $t2, $t0, $t1        # c = a + b
+
+        jr $ra                   # terminate
+```
+
+Steps:
+
+1. Start up QtSpim
+2. Load your program with the second-button-from-the-left (folder with a blue icon inside it).
+3. Look at Data tab and Text tab to examine your loaded program.
+4. Run single-step through your program using icon that looks like a bulleted list (right-of the stop icon). Watch your registers on the left panel.
+5. Check your results in the data tab.
+
+![QtSpim loading program](/images/qtspim-1.png)
+
+![QtSpim looking at code](/images/qtspim-2.png)
+
+![QtSpim looking at data](/images/qtspim-3.png)
+
+![QtSpim single-stepping code](/images/qtspim-4.png)
