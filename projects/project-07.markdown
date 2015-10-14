@@ -30,3 +30,5 @@ P.S. For what it's worth, my assembler coded in Perl required 12 lines of code, 
 ## Extra credit
 
 Write a disassembler that translates machine language back to assembly language. Use the same example files. (+1pt)
+
+Also, +1pt if you support labels & variables as well as `M[#]` syntax.
