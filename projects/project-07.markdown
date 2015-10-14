@@ -29,4 +29,4 @@ P.S. For what it's worth, my assembler coded in Perl required 12 lines of code, 
 
 ## Extra credit
 
-Write a disassembler that translates machine language back to assembly language. Use the same example files. (+2pts)
+Write a disassembler that translates machine language back to assembly language. Use the same example files. (+1pt)
