@@ -31,6 +31,13 @@ For example, if you see `c = ...` in the Java-like code below then that's a `pop
 
 Test in the `VMEmulator` using the test scripts in [this ZIP file](/code/project-08.zip).
 
+Note: you must include these two lines at the end of every program (even "minimal" programs):
+
+```
+label end
+goto end
+```
+
 ### Program 1
 
 {% highlight java %}
@@ -56,10 +63,15 @@ if(x > 0) {
 ### Program 4
 
 {% highlight java %}
+// the final output we care about is j
+// take note that k comes from the test script
 int j = 0;
-for(int i = 0; i < 10; i++) {
+for(int i = 0; i < k; i++) {
     i = i + j;
     j++;
 }
 {% endhighlight %}
 
+## Extra credit
+
++0.5pts for each minimal program.
