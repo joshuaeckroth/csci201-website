@@ -11,6 +11,11 @@ Install Gforth:
 - Mac: [download a .pkg file](http://rudix.org/packages/gforth.html)
 - Linux: you know the drill
 
+## Overview
+
+- For our purposes, **Forth code requires no variables.** Everything is on the stack. There is no need for `argument 0` or `temp 0` or whatever.
+- Pushes and pops are **implicit**. There is no `push` command nor `pop` command.
+
 ## Syntax
 
 ```

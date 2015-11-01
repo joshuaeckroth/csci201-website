@@ -21,23 +21,25 @@ int max(a, b)
 ```
 
 ```
-// returns a/b
+// returns a/b; assume a>=0 and b>=0
 int quotient(a, b)
 ```
 
 ```
-// returns a^b; computes iteratively
+// returns a^b; assume a>=0, b>=0; computes iteratively;
+// uses mult; note, n^0 = 1
 int iterativePow(a, b)
 ```
 
 ```
-// returns a^b; computes recursively
+// returns a^b; assume a>=0, b>=0; computes recursively;
+// uses mult; note, n^0 = 1
 int recursivePow(a, b)
 ```
 
 ```
 // returns -1 if n is prime, 0 otherwise;
-// uses mod function from notes
+// uses mod function from notes; assume n>=2
 int prime(n)
 ```
 
