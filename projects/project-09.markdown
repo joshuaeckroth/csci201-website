@@ -50,5 +50,7 @@ Download test files: [project-09.zip](/code/project-09.zip) (incomplete). The te
 Write these "words" in [Forth](/notes/forth.html). The code must run on Gforth.
 
 ```
-max2 ( a b -- maxval )
+max2 ( a b -- maxval // must not use builtin max )
+quotient ( a b -- a/b // must not use builtin / or mod )
+prime? ( n -- -1/0 )
 ```
