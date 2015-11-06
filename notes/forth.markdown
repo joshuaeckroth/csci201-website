@@ -25,7 +25,7 @@ Install Gforth:
 : timesTwo 2 * ;
 
 ( everything else is either a number, which pushes to the stack, or a word )
-5 2 + 3 * - timesTwo
+5 2 + 3 * 10 - timesTwo
 ```
 
 Words are often "documented" by indicating how the stack is transformed: `( n -- n n )` means `n` was on the top of the stack, and `n n` is now at the top of the stack (`n` is duplicated).
