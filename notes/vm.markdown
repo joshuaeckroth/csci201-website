@@ -71,3 +71,85 @@ push constant 19 // another arbitrary value
 pop this 8       // set A[8] = 19
 ```
 
+## Translation to Assembly
+
+Naturally, VM code must be translated to assembly (which must be translated to machine code) before VM code can execute. This section gives details about that translation.
+
+In assembly coding, all of RAM was free to use. With the virtual machine, RAM is divided into these segments:
+
+| RAM Addresses | Usage |
+|---------------|-------|
+| 0 | Stack pointer (`@SP`)
+| 1 | Start of current function's `local` segment (`@LCL`) |
+| 2 | Start of current function's `argument` segment (`@ARG`) |
+| 3 | Start of current function's `this` segment in heap (`@THIS`) |
+| 4 | Start of current function's `that` segment in heap (`@THAT`) |
+| 5-12 | Holds contents of `temp` segment (`temp 0` is `RAM[5]`, etc.) |
+| 13-15 | Can be used as registers by VM |
+| 16-255 | Static variables |
+| 256-2047 | Stack |
+| 2048-16383 | Heap |
+| 16384-24575 | Memory mapped I/O (screen, keyboard) |
+| 24575-32767 | Unused |
+
+Most RAM manipulations take place in the stack segment, though there are some special cases where the VM-assembly translator must deal with the other segments.
+
+### Arithmetic
+
+The simplest VM code is just arithmetic operations, e.g.,
+
+```
+push constant 7
+push constant 8
+add
+```
+
+The VM-assembly translator must translate that code into the following abstract operations:
+
+1. Save a `7` into `RAM[SP]` (whatever `SP` points to, save `7` there). Then increase the value of `SP`. That is effectively pushing 7 onto the stack.
+2. Push `8` onto the stack in the same manner.
+3. Pull the value at the top of the stack (the 8) into a register (say, `D` register). Decrement the stack pointer `SP`. Add the 8 with the new value at the top of the stack (the 7) and save the result back into the same place (overwriting the 7 at the top of the stack).
+
+You can treat each line as an independent operation. `push constant 7` will always do the same thing, regardless of what came before or next. `add` always does the same thing, etc.
+
+### Function definitions
+
+When the VM code contains the start of a function, e.g.,
+
+```
+function Foo.bar 2
+```
+
+the VM-assembly translator should do the following:
+
+1. (todo)
+
+### Function calls
+
+```
+call Foo.bar 2
+```
+
+1. Create a unique label name for the line of code *after* the function call. This is where the function's `return` statement needs to jump.
+2. Push the return address (identified by the unique label generated in step 1) onto the stack.
+3. Push each of these values from memory onto the stack, in this order, so they can be restored after the function has been called: `LCL`, `ARG`, `THIS`, `THAT`.
+4. Set memory `LCL` to the current value of the stack pointer. The function's local variables start in memory at start of the function's view of the stack.
+5. Set `ARG` value in memory to current `SP` value minus number of args minus 5. This needs to be done after old value of `ARG` was pushed on the stack (step 5). We subtract 5 from `SP-argcount` because we want `ARG` to point to the last values put on the stack before the function call, and those values live exactly at `SP-argcount-5` because we have pushed five values onto the stack (return address, `LCL`, `ARG`, `THIS`, `THAT`).
+6. Finally, jump to the function's address, which is held in the variable `Foo.bar` (whatever the function name); this variable was established earlier (see "function definitions" section above).
+
+### Returning from a function call
+
+```
+return
+```
+
+The steps below undo all the pushes that were performed when the function was called (see section above, "function calls").
+
+Note, the return value from the function is on the top of the stack, currently. Also note that `ARG` points to the location in memory with the first argument from the original function call that is being returned from, so `ARG+1` will be the final stack pointer after returning (`ARG+1` because we'll leave the return value on the stack).
+
+1. Pop the return value off the top of the stack and save somewhere temporarily, e.g., `R13`.
+2. Save `ARG` value in memory to a temporary holding place, e.g., `R14`. We'll need this later to figure out where the stack pointer was before the function was called.
+2. Restore each of these values back into memory, in reverse order that they were pushed: `THAT`, `THIS`, `ARG`, `LCL`.
+3. Now, the next value on the stack is the return address; pop this off into, say, `R15`.
+4. Set memory at the addressed saved in `R14` to the return value, then set the new stack pointer `SP` to `R14+1`. Now, to the parent function, the stack looks just like it left it before the function call (and before pushing the function arguments), except that the function's return value is also on the stack.
+5. Jump to the address stored in `R15`.
