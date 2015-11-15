@@ -20,7 +20,7 @@ Don't use "local" variables (`pop local 0` or whatever); we won't be able to cor
 Defining a function:
 
 ```
-function File.funcname [argcount]
+function File.funcname [local count]
 ...
 return // whatever's on the top of the stack is the return value
 ```
@@ -117,12 +117,13 @@ You can treat each line as an independent operation. `push constant 7` will alwa
 When the VM code contains the start of a function, e.g.,
 
 ```
-function Foo.bar 2
+function Foo.bar 5
 ```
 
-the VM-assembly translator should do the following:
+(where 5 represents the number of locals used in the function), the VM-assembly translator should do the following:
 
-1. (todo)
+1. Create a label representing the function name. This is where the function officially starts.
+2. When the function is called, the `LCL` pointer equals the stack pointer `SP`. This leaves no room for local variables; recall that local variables are stored just before the stack starts. So, the stack pointer must be moved forward by the number of locals (5 in the example). You should also set those local values to 0 (so effectively push constant 0 num-locals times, or 5 times in this example).
 
 ### Function calls
 
@@ -130,11 +131,13 @@ the VM-assembly translator should do the following:
 call Foo.bar 2
 ```
 
-1. Create a unique label name for the line of code *after* the function call. This is where the function's `return` statement needs to jump.
+where 2 is the number of function arguments. For a diagram, see slide 17 of [the book authors' slides](http://www.nand2tetris.org/lectures/PDF/lecture%2008%20virtual%20machine%20II.pdf).
+
+1. Create a unique label name for the line of code *after* the function call. This is where the function's `return` statement needs to jump to continue execution of the calling function.
 2. Push the return address (identified by the unique label generated in step 1) onto the stack.
 3. Push each of these values from memory onto the stack, in this order, so they can be restored after the function has been called: `LCL`, `ARG`, `THIS`, `THAT`.
-4. Set memory `LCL` to the current value of the stack pointer. The function's local variables start in memory at start of the function's view of the stack.
-5. Set `ARG` value in memory to current `SP` value minus number of args minus 5. This needs to be done after old value of `ARG` was pushed on the stack (step 5). We subtract 5 from `SP-argcount` because we want `ARG` to point to the last values put on the stack before the function call, and those values live exactly at `SP-argcount-5` because we have pushed five values onto the stack (return address, `LCL`, `ARG`, `THIS`, `THAT`).
+4. Set memory `LCL` to the current value of the stack pointer. The function's local variables start in memory at the start of the current stack.
+5. Set `ARG` value in memory to current `SP` value minus number of args (2 in the example) minus 5. This needs to be done after old value of `ARG` was pushed on the stack (step 5). We subtract 5 from `SP-argcount` because we want `ARG` to point to the last values put on the stack before the function call, and those values live exactly at `SP-argcount-5` because we have pushed five values onto the stack (return address, `LCL`, `ARG`, `THIS`, `THAT`).
 6. Finally, jump to the function's address, which is held in the variable `Foo.bar` (whatever the function name); this variable was established earlier (see "function definitions" section above).
 
 ### Returning from a function call
@@ -143,7 +146,7 @@ call Foo.bar 2
 return
 ```
 
-The steps below undo all the pushes that were performed when the function was called (see section above, "function calls").
+The steps below undo all the pushes that were performed when the function was called (see section above, "function calls"). For a diagram, see slide 17 of [the book authors' slides](http://www.nand2tetris.org/lectures/PDF/lecture%2008%20virtual%20machine%20II.pdf).
 
 Note, the return value from the function is on the top of the stack, currently. Also note that `ARG` points to the location in memory with the first argument from the original function call that is being returned from, so `ARG+1` will be the final stack pointer after returning (`ARG+1` because we'll leave the return value on the stack).
 
@@ -151,5 +154,5 @@ Note, the return value from the function is on the top of the stack, currently. 
 2. Save `ARG` value in memory to a temporary holding place, e.g., `R14`. We'll need this later to figure out where the stack pointer was before the function was called.
 2. Restore each of these values back into memory, in reverse order that they were pushed: `THAT`, `THIS`, `ARG`, `LCL`.
 3. Now, the next value on the stack is the return address; pop this off into, say, `R15`.
-4. Set memory at the addressed saved in `R14` to the return value, then set the new stack pointer `SP` to `R14+1`. Now, to the parent function, the stack looks just like it left it before the function call (and before pushing the function arguments), except that the function's return value is also on the stack.
-5. Jump to the address stored in `R15`.
+4. Set memory at the addressed saved in `R14` to the return value, since `R14` holds the new top of the stack. Then set the new stack pointer `SP` to `R14+1`. After this is done, according to the parent function's perspective, the stack looks just like it left it before the function call (and before pushing the function arguments), except that the function's return value is also on the stack.
+5. Jump to the address stored in `R15`, which was the location of the next line of code in the calling function.
