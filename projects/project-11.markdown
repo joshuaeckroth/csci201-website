@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Project 11
-due: "Nov 23, 11:59pm"
+due: "Nov 30, 11:59pm"
 categories: [projects]
 ---
 

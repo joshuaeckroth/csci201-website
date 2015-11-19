@@ -43,7 +43,7 @@ int recursivePow(a, b)
 int prime(n)
 ```
 
-Download test files: [project-09.zip](/code/project-09.zip) (incomplete). The test files include working implementations of examples from class.
+Download test files: [project-09.zip](/code/project-09.zip). The test files include working implementations of examples from class.
 
 ## Task 2
 
