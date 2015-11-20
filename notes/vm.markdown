@@ -133,12 +133,13 @@ call Foo.bar 2
 
 where 2 is the number of function arguments. For a diagram, see slide 17 of [the book authors' slides](http://www.nand2tetris.org/lectures/PDF/lecture%2008%20virtual%20machine%20II.pdf).
 
-1. Create a unique label name for the line of code *after* the function call. This is where the function's `return` statement needs to jump to continue execution of the calling function.
 2. Push the return address (identified by the unique label generated in step 1) onto the stack.
 3. Push each of these values from memory onto the stack, in this order, so they can be restored after the function has been called: `LCL`, `ARG`, `THIS`, `THAT`.
 4. Set memory `LCL` to the current value of the stack pointer. The function's local variables start in memory at the start of the current stack.
 5. Set `ARG` value in memory to current `SP` value minus number of args (2 in the example) minus 5. This needs to be done after old value of `ARG` was pushed on the stack (step 5). We subtract 5 from `SP-argcount` because we want `ARG` to point to the last values put on the stack before the function call, and those values live exactly at `SP-argcount-5` because we have pushed five values onto the stack (return address, `LCL`, `ARG`, `THIS`, `THAT`).
 6. Finally, jump to the function's address, which is held in the variable `Foo.bar` (whatever the function name); this variable was established earlier (see "function definitions" section above).
+7. Create a unique label name for the line of code *after* the jump. This is where the function's `return` statement needs to jump to continue execution of the calling function.
+
 
 ### Returning from a function call
 
