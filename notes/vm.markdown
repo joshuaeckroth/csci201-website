@@ -152,6 +152,7 @@ Note, the return value from the function is on the top of the stack, currently. 
 
 1. Pop the return value off the top of the stack and save somewhere temporarily, e.g., `R13`.
 2. Save `ARG` value in memory to a temporary holding place, e.g., `R14`. We'll need this later to figure out where the stack pointer was before the function was called.
+2. Reset `SP` to `LCL` since `LCL` is (1 position beyond) the values pushed on the function call: `THAT`, `THIS`, `ARG`, `LCL`.
 2. Restore each of these values back into memory, in reverse order that they were pushed: `THAT`, `THIS`, `ARG`, `LCL`.
 3. Now, the next value on the stack is the return address; pop this off into, say, `R15`.
 4. Set memory at the addressed saved in `R14` to the return value, since `R14` holds the new top of the stack. Then set the new stack pointer `SP` to `R14+1`. After this is done, according to the parent function's perspective, the stack looks just like it left it before the function call (and before pushing the function arguments), except that the function's return value is also on the stack.
