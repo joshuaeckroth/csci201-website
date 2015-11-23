@@ -9,7 +9,7 @@ title: ANTLR
 
 We'll be using version 4. Download [antlr-4.5.1-complete.jar](/code/antlr-4.5.1-complete.jar).
 
-More applications are mentioned on the [Wikipedia page](https://en.wikipedia.org/wiki/ANTLR).
+More applications are mentioned on the [Wikipedia page](https://en.wikipedia.org/wiki/ANTLR). Here are a bunch of example grammars: [https://github.com/antlr/grammars-v4](https://github.com/antlr/grammars-v4)
 
 ## Overview
 
