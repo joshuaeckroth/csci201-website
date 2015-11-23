@@ -3,7 +3,7 @@ layout: post
 title: Final review (incomplete)
 ---
 
-# Final review
+# Final review (incomplete)
 
 The final exam will be on paper. You can bring a 5x7 notecard fill with notes front and back. You will see questions like you see on this review.
 
