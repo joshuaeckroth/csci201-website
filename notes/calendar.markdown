@@ -5,56 +5,53 @@ title: Calendar
 
 # Calendar
 
-## Week 0: Introduction
+## Weeks 0-1: Introduction, Logic gates
 
 - [Syllabus](/notes/syllabus.html)
 - [Calendar](/notes/calendar.html)
+- [git](/notes/git.html)
+- [Simulators](/notes/simulators.html)
+- [Boolean algebra](/notes/boolean-algebra.html)
 
-## Week 1: Logic gates, HDL
+## Weeks 2-3: Combinational logic
 
-{% comment %}
-- [Logic gates](/notes/logic-gates.html)
-- [HDL](/notes/hdl.html)
-{% endcomment %}
+- [Project 1](/projects/project-01.html)
+- [Project 2](/projects/project-02.html)
 
-## Week 2: Combinational logic
+## Week 4: Sequential logic
 
-{% comment %}
-- [Adders](/notes/adders.html)
-- [ALU](/notes/alu.html)
-{% endcomment %}
+- [Project 3](/projects/project-03.html)
 
-## Week 3: Sequential logic
+## Weeks 5-6: Machine &amp; assembly language
 
-{% comment %}
-- [Registers](/notes/registers.html)
-- [Counters](/notes/counters.html)
-- [RAM](/notes/ram.html)
-{% endcomment %}
-
-## Weeks 4 &amp; 5: Machine &amp; assembly language
-
-{% comment %}
-- [Machine language](/notes/machine-language.html)
-- [Instruction set architecture](/notes/isa.html)
+- [Project 4](/projects/project-04.html)
+- [Project 5](/projects/project-05.html)
 - [Assembly language](/notes/assembly-language.html)
-{% endcomment %}
 
-## Week 6: Building a computer
+## Weeks 7-8: Building a computer
 
-## Week 7: Assembler
+- [Project 6](/projects/project-06.html)
 
-{% comment %}
-- [Assembler](/notes/assembler.html)
-{% endcomment %}
+## Week 9: Assembler
 
-## Weeks 8-10: Virtual machines
+- [Project 7](/projects/project-07.html)
 
-## Weeks 11-13: Jack language
+## Weeks 10-11: VM language
 
-{% comment %}
-- [Jack parser](/notes/jack-parser.html)
-- [Jack compiler](/notes/jack-compiler.html)
-{% endcomment %}
+- [Project 8](/projects/project-08.html)
+- [Project 9](/projects/project-09.html)
+- [VM language](/notes/vm.html)
+
+## Weeks 12-14: VM language translator
+
+- [Project 10](/projects/project-10.html)
+- [Project 11](/projects/project-11.html)
+- [VM language](/notes/vm.html)
+
+## Week 15: Grammars, lexers, parsers, tree visitors
+
+- [Project 12](/projects/project-12.html)
+- [ANTLR](/notes/antlr.html)
+- [Final review](/notes/final-review.html)
 
 Final exam: **Thursday, Dec 10, 4-6p**

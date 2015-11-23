@@ -13,7 +13,8 @@ categories: [projects]
 
 Implement the following logic gates by writing an HDL file for each. Start with the HDL templates provided. Be sure to test your implementations with the corresponding test scripts.
 
-You may use any gate described in Chapter 1: `Nand, Not, And, Or, Xor, Mux, DMux, Not16, And16, Or16, Mux16, Or8Way, Mux4Way16, Mux8Way16, DMux4Way, DMux8Way`, plus whatever gates you implement in this project.
+You may use any gate described in Chapter 1: `Nand`, `Not`, `And`, `Or`, `Xor`, `Mux`, `DMux`, `Not16`, `And16`, `Or16`,
+`Mux16`, `Or8Way`, `Mux4Way16`, `Mux8Way16`, `DMux4Way`, `DMux8Way`, plus whatever gates you implement in this project.
 
 ## Gates to implement
 
