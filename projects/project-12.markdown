@@ -13,9 +13,7 @@ This is the final project. You will translate code written in a high-level imper
 
 ## Task 1
 
-Translate Sprinkles (an imperative language) to VM (a stack language).
-
-Start by writing a grammer for simple math expressions, and translating those to VM code. Then add if's and while's, then variables (locals), etc.
+Translate Sprinkles (an imperative language) to VM (a stack language). Look at the code provided in the ZIP, and find the TODOs.
 
 Turn in `Sprinkles.g4` and `SprinklesVMVisitor.java`. I give you `Sprinkles.java` below. ANTLR generates the rest of the needed files. See the bottom of the [ANTLR](/notes/antlr.html) notes for info about compiling and running your code.
 
@@ -57,7 +55,7 @@ end
 
 Write a parse tree visitor to translate from Sprinkles to Java code (or Python, or C, or whatever). The Java code should be executable. Note that every numeric value has type `int`.
 
-Implement some optimizations, e.g., computing some expressions in the translator and just saving the answer in the VM code (e.g., computing `5+2` ahead of time), inlining short functions (copy-pasting function code to the place it is called and avoiding the function call), eliminating code that does not contribute to a function's return value (e.g., if `x=mult(a,b)` occurs in the function but the function finishes with `return 5`, then there was no reason to compute `x`; you'll want to ensure `x` is not used in any memory operation...), etc.
+Implement some optimizations, e.g., computing some expressions in the translator and just saving the answer in the VM code (e.g., computing `5+2` ahead of time), inlining short functions (copy-pasting function code to the place it is called and avoiding the function call), eliminating code that does not contribute to a function's return value (e.g., if `x=mult(a,b)` occurs in the function but the function finishes with `return 5`, then there was no reason to compute `x`...), etc.
 
 {% comment %}
 You can translate the resulting VM code to assembler using [VMTranslator.jar](/code/VMTranslator.jar) from [Gilad Goldberg & Avishai Lazar](https://code.google.com/p/nand2tet-gilad-avishai/source/browse/#svn%2Ftrunk%2Fnand2tet.ex8%2Fsrc), unless you want to use your own VM-assembler translator from project 11.
@@ -108,30 +106,6 @@ function mult(a, b)
 end
 ```
 
-Screen drawing (don't worry about the algorithm):
-
-```
-function writePixel(x, y)
-
-    // determine which word needs to be set
-    pos = math.mult(y, 32) + math.quotient(x, 16)
-
-    // determine pattern for correct bit in 16-bit word to set
-    xb = math.mod(x, 16)
-    i = 0
-    pattern = 1
-    while i < xb do
-        pattern = math.mult(pattern, 2)
-        i = i + 1
-    end
-
-    idx = 16384 + pos
-    mem[idx] = mem[idx] | pattern // "or" existing bits with new bit
-
-    return 0 // bogus return value, this is a "void" function
-end
-```
-
 ### Function definitions
 
 ```
@@ -158,8 +132,6 @@ end
 
 Either `return` or `exit` must be the last statement before `end`. Every function must have `return` or `exit`. If a function uses `return`, then it pushes a value on the stack, which may well be ignored. If you want a `void` function, just `return 0` or whatever value.
 
-Full function name is `[filename].[function name]`.
-
 ### Statements
 
 A function consists of statements. There are four kinds of statements:
@@ -171,7 +143,7 @@ A function consists of statements. There are four kinds of statements:
 
 ### If's
 
-Note, conditional expressions are not special. They should have the value -1 or 0, but in actuality, any non-zero value should be treated as `true`.
+Note, conditional expressions are not different than other expressions. They should have the value -1 or 0, but in actuality, any non-zero value should be treated as `true`.
 
 ```
 if [conditional expression] then
@@ -220,12 +192,6 @@ foo(2, 3, x+y)
 
 Inside the parens, for each position (separated by commas), any expression may be present.
 
-Functions may be defined in a different file, in which case the full name must be used (filename followed by dot):
-
-```
-somefile.foo(2, 3, x+y)
-```
-
 ### Expressions
 
 Expressions have a value, i.e., a final value is sitting on the stack after the expression is computed. Expressions may be:
@@ -233,31 +199,10 @@ Expressions have a value, i.e., a final value is sitting on the stack after the 
 - '!expr' operator for negation
 - 'expr + expr', 'expr - expr', etc. for various operators: `+, -, &, |, >, >=, <, <=, ==, !=`
 - a function call (which leaves a return value on the stack)
-- a memory operation (see below)
-- a number (integers only, possibly negative)
+- a number (integers only)
+- a negation of another expression
 - a local variable (whose value is pushed on the stack)
 - another expression in parentheses
-
-### Memory operations
-
-`idx` is a memory address (in raw RAM)
-
-```
-mem[idx] = expression
-```
-
-e.g.
-
-```
-mem[55] = 0
-```
-
-Inside the `[]` can be any expression:
-
-```
-x = 5
-mem[x-5] = mem[x-mem[7]] + 2
-```
 
 ## Hints
 
@@ -273,20 +218,31 @@ prog:   ( func )*
     ;
 
 
-// ...
+func:   'function' ID funcparams
+        statementList
+        (exit|ret)
+        'end'
+    ;
 
 statementList
     :   (ifStatement|whileStatement|assignmentStatement|funcCall)*
     ;
 
-// ...
+ret :   'return' expr
+    ;
+
+exit:   'exit' expr
+    ;
+
+
+
+// TODO: if and while statement rules...
+
+
 
 assignmentStatement
     :   ID '=' val=expr
-    |   'mem' '[' idx=expr ']' '=' val=expr
     ;
-
-// ...
 
 funcCall
     :   ID '(' exprList? ')'
@@ -296,7 +252,19 @@ exprList
     :   expr (expr|(',' expr))*
     ;
 
-// ...
+expr:   '(' expr ')'
+    |   op='!' right=expr
+
+// TODO add +, -, <=, >=, etc. operators
+
+    |   funcCall
+    |   var=ID
+    |   num=INT
+    |   neg='-' right=expr
+    ;    
+
+INT :   DIGIT+
+    ;
 
 ARRAYPOS:
     DIGIT+
@@ -304,6 +272,11 @@ ARRAYPOS:
 
 ID  :   '.' (LETTER|'_'|'.') (LETTER|DIGIT|'_'|'.')*
     |   LETTER (LETTER|DIGIT|'_'|'.')*
+    ;
+
+funcparams
+    :   '(' ID (',' ID)* ')'
+    |   '(' ')'
     ;
 
 WS  :   [ \t\n\r]+ -> skip ;
@@ -343,7 +316,7 @@ public class Sprinkles {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		SprinklesParser parser = new SprinklesParser(tokens);
 		SprinklesParser.ProgContext tree = parser.prog();
-		String vmcode = new SprinklesVMVisitor(inputFile).visit(tree);
+		String vmcode = new SprinklesVMVisitor().visit(tree);
 		System.out.println(vmcode);
 	}
 }
@@ -353,27 +326,7 @@ public class Sprinkles {
 
 This file actually builds the VM code as a big string, based on which part of the parse tree is being handled. A different function is needed for each rule of the grammar.
 
-{% highlight java %}
-
-// in the SprinklesVMVistor constructor, be sure to pass in the filename
-// so you can determine the full names of any functions defined in the file
-public SprinklesVMVisitor(String filename) {
-	super();
-    // ...
-    // set pkg to the prefix to prepend to each defined function name
-    // and any function calls that don't already include a prefix
-	pkg = filename.substring(0, filename.indexOf(".sprinkles"));
-	if(pkg.lastIndexOf("/") != -1) {
-		pkg = pkg.substring(pkg.lastIndexOf("/") + 1);
-	}
-	if(pkg.lastIndexOf("\\") != -1) {
-		pkg = pkg.substring(pkg.lastIndexOf("\\") + 1);
-	}
-    // ...
-}
-{% endhighlight %}
-
-Visitor for root `prog` rule. Note how a `StringBuilder` is used to build a final string holding all the translated VM code. Each function definition is visited and the result appended to the string. Once all function definitions have been visited, the final string is the complete program for this file.
+Here is the visitor for root `prog` rule. Note how a `StringBuilder` is used to build a final string holding all the translated VM code. Each function definition is visited and the result appended to the string. Once all function definitions have been visited, the final string is the complete program for this file.
 
 {% highlight java %}
 public String visitProg(SprinklesParser.ProgContext ctx) {
@@ -397,44 +350,29 @@ public String visitStatementList(SprinklesParser.StatementListContext ctx) {
 }
 {% endhighlight %}
 
-Here is code for handling `mem[idx] = ...`:
-
-{% highlight java %}
-public String visitAssignmentStatement(SprinklesParser.AssignmentStatementContext ctx) {
-    if(ctx.idx != null) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.visit(ctx.val));
-        // compute mem address (push on stack)
-        sb.append(this.visit(ctx.idx));
-        // pop memory address into "pointer 1" position (used by "that")
-        sb.append("pop pointer 1\n");
-        // finally, pop value on stack into "that 0" (which uses "pointer 1" location)
-        sb.append("pop that 0\n");
-        return sb.toString();
-    } else {
-        // ... handle assignment into a normal variable
-    }
-}
-{% endhighlight %}
-
-Here is code for handling `x = mem[idx] + ...`, in other words, `mem[idx]` in the context of an expression (rather than assignment). The goal is to push the value of `mem[idx]` on the stack:
+Here is code for visiting expressions.
 
 {% highlight java %}
 public String visitExpr(SprinklesParser.ExprContext ctx) {
     StringBuilder sb = new StringBuilder();
-    // ... other expression handling
 
-    // mem[expr]
-    if(ctx.idx != null) {
-        // compute mem address (push on stack)
-        sb.append(this.visit(ctx.idx));
-        // put memory address into "pointer 1"
-		sb.append("pop pointer 1\n");
-        // use "that 0" (i.e., "pointer 1" location) to push memory value onto stack
-		sb.append("push that 0\n");
+    // some expression handling, such as:
+    if(ctx.op.getText() == "!") {
+        sb.append(this.visit(ctx.right));
+        sb.append("not\n");
+    }
+    else if(ctx.op.getText() == "+") {
+        sb.append(this.visit(ctx.left));
+        sb.append(this.visit(ctx.right));
+        sb.append("add\n");
+    }
+    else if(ctx.num != null) {
+        sb.append("push constant " + ctx.num.getText() + "\n");
 	}
 
-    // more expression handling...
+    // TODO handle rest of operators...
+
+
     return sb.toString();
 }
 {% endhighlight %}
@@ -450,5 +388,3 @@ public String visitExit(SprinklesParser.ExitContext ctx) {
 	return sb.toString();
 }
 {% endhighlight %}
-
-
