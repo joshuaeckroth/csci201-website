@@ -29,7 +29,7 @@ Work hard in this class and you should be able to:
 
 ## Grading
 
-- Projects (13 of them): 80%
+- Projects (12 of them): 80%
 - Final exam: 20%
 
 ### Projects
