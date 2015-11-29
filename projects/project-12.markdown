@@ -13,59 +13,11 @@ This is the final project. You will translate code written in a high-level imper
 
 ## Task 1
 
-Translate Sprinkles (an imperative language) to VM (a stack language). Look at the code provided in the ZIP, and find the TODOs.
+Translate Sprinkles (an imperative language) to VM (a stack language). Look at the code provided in the ZIP file and code snippets below.
 
-Turn in `Sprinkles.g4` and `SprinklesVMVisitor.java`. I give you `Sprinkles.java` below. ANTLR generates the rest of the needed files. See the bottom of the [ANTLR](/notes/antlr.html) notes for info about compiling and running your code.
+Turn in `Sprinkles.g4` and `SprinklesVMVisitor.java`. I give you `Sprinkles.java` below in its entirety. ANTLR generates the rest of the needed files. See the bottom of the [ANTLR](/notes/antlr.html) notes for info about compiling and running your code.
 
-Test the resulting VM code with these test scripts: [project-12.zip](/code/project-12.zip) (not ready yet). In the ZIP you will also find some example Sprinkles code and corresponding VM translations.
-
-## Extra credit
-
-Add support for global variables (using VM `static 0` etc.) with special variable names that start are written `_g0`, `_g1`, ... or some other format.
-
-Add support for `for` loops:
-
-```
-for(i = 0; i < 10; i = i + 1)
-    [statement]
-    [statement]
-    ...
-end
-```
-
-Add support for a `switch` statement:
-
-```
-switch(expr) // any expression
-case 1:
-    [statement]
-    [statement]
-    ... // no break in this case
-case x*5: // any expression
-    [statement]
-    [statement]
-    ...
-    break
-default:
-    [statement]
-    [statement]
-    ...
-end
-```
-
-Write a parse tree visitor to translate from Sprinkles to Java code (or Python, or C, or whatever). The Java code should be executable. Note that every numeric value has type `int`.
-
-Implement some optimizations, e.g., computing some expressions in the translator and just saving the answer in the VM code (e.g., computing `5+2` ahead of time), inlining short functions (copy-pasting function code to the place it is called and avoiding the function call), eliminating code that does not contribute to a function's return value (e.g., if `x=mult(a,b)` occurs in the function but the function finishes with `return 5`, then there was no reason to compute `x`...), etc.
-
-{% comment %}
-You can translate the resulting VM code to assembler using [VMTranslator.jar](/code/VMTranslator.jar) from [Gilad Goldberg & Avishai Lazar](https://code.google.com/p/nand2tet-gilad-avishai/source/browse/#svn%2Ftrunk%2Fnand2tet.ex8%2Fsrc), unless you want to use your own VM-assembler translator from project 11.
-
-To use `VMTranslator.jar`, put your VM files in a folder, then run:
-
-```
-java -jar VMTranslator.jar [folder name]
-```
-{% endcomment %}
+Test the resulting VM code with these test scripts: [project-12.zip](/code/project-12.zip). In the ZIP you will also find some example Sprinkles code and corresponding VM translations. I've also include a "SprinklesLite" language, fully implemented and working (with test cases), but missing some binary operators, if's, while's, and local variables.
 
 ## The Sprinkles language
 
@@ -118,6 +70,12 @@ end
 ```
 
 Function parameters (`a, b, c` above) should be treated as local variables. The values come from `argument 0` etc. in the VM language, but should be popped immediately into `local 0` etc. when the function code begins.
+
+You'll need to determine how many "local" variables appear in the function definition. The function arguments are local variables, as are any other variables that appear in the function. This count should appear in the VM code where the function starts:
+
+```
+function foo 3  <--- local variable count
+```
 
 Special case for `exit` (intended to be used on `main`):
 
@@ -192,6 +150,10 @@ foo(2, 3, x+y)
 
 Inside the parens, for each position (separated by commas), any expression may be present.
 
+Recall in the VM language, when you want to call a function, you have to give a number that indicates how many arguments are on the stack. To do this in your Sprinkles translator, you'll need to count how many items appear in the parentheses of the function call. You can do this by counting the number of children in the `exprList` and diving by 2 to ignore the commas (using `(ctx.exprList().getChildCount()+1)/2`; see the grammar below for understanding what `exprList` is). See the diagram below for an example.
+
+![Example exprList](/images/sprinkles-exprlist-count.png)
+
 ### Expressions
 
 Expressions have a value, i.e., a final value is sitting on the stack after the expression is computed. Expressions may be:
@@ -264,10 +226,6 @@ expr:   '(' expr ')'
     ;    
 
 INT :   DIGIT+
-    ;
-
-ARRAYPOS:
-    DIGIT+
     ;
 
 ID  :   '.' (LETTER|'_'|'.') (LETTER|DIGIT|'_'|'.')*
@@ -357,11 +315,11 @@ public String visitExpr(SprinklesParser.ExprContext ctx) {
     StringBuilder sb = new StringBuilder();
 
     // some expression handling, such as:
-    if(ctx.op.getText() == "!") {
+    if(ctx.op.getText().equals("!")) {
         sb.append(this.visit(ctx.right));
         sb.append("not\n");
     }
-    else if(ctx.op.getText() == "+") {
+    else if(ctx.op.getText().equals("+")) {
         sb.append(this.visit(ctx.left));
         sb.append(this.visit(ctx.right));
         sb.append("add\n");
@@ -383,8 +341,76 @@ The `exit [expr]` statement just puts an infinite loop in its place computing th
 public String visitExit(SprinklesParser.ExitContext ctx) {
 	StringBuilder sb = new StringBuilder();
 	sb.append(this.visit(ctx.expr()));
-	sb.append("label " + lookupLabel(ctx) + "\n");
-	sb.append("goto " + lookupLabel(ctx) + "\n");
+	sb.append("label __end__\n");
+	sb.append("goto __end__\n");
 	return sb.toString();
 }
 {% endhighlight %}
+
+## Visualizations
+
+It can be useful to visualize your parse trees. A builtin ANTLR tool will read your grammar file (Sprinkles.g4) and show a parse tree diagram of a particular program.
+
+```
+cat test-arithmetic/testAdd1.sprinkles | java -cp antlr-4.5.1-complete.jar:. org.antlr.v4.gui.TestRig Sprinkles prog -gui
+```
+
+Or equally:
+
+```
+java -cp antlr-4.5.1-complete.jar:. org.antlr.v4.gui.TestRig Sprinkles prog -gui < test-arithmetic/testAdd1.sprinkles
+```
+
+Obviously, change the filename as appropriate.
+
+![Parse tree](/images/sprinkles-parse-tree.png)
+
+
+## Extra credit
+
+Add support for global variables (using VM `static 0` etc.) with special variable names that start are written `_g0`, `_g1`, ... or some other format.
+
+Add support for `for` loops:
+
+```
+for(i = 0; i < 10; i = i + 1)
+    [statement]
+    [statement]
+    ...
+end
+```
+
+Add support for a `switch` statement:
+
+```
+switch(expr) // any expression
+case 1:
+    [statement]
+    [statement]
+    ... // no break in this case
+case x*5: // any expression
+    [statement]
+    [statement]
+    ...
+    break
+default:
+    [statement]
+    [statement]
+    ...
+end
+```
+
+Write a parse tree visitor to translate from Sprinkles to Java code (or Python, or C, or whatever). The Java code should be executable. Note that every numeric value has type `int`.
+
+Implement some optimizations, e.g., computing some expressions in the translator and just saving the answer in the VM code (e.g., computing `5+2` ahead of time), inlining short functions (copy-pasting function code to the place it is called and avoiding the function call), eliminating code that does not contribute to a function's return value (e.g., if `x=mult(a,b)` occurs in the function but the function finishes with `return 5`, then there was no reason to compute `x`...), etc.
+
+{% comment %}
+You can translate the resulting VM code to assembler using [VMTranslator.jar](/code/VMTranslator.jar) from [Gilad Goldberg & Avishai Lazar](https://code.google.com/p/nand2tet-gilad-avishai/source/browse/#svn%2Ftrunk%2Fnand2tet.ex8%2Fsrc), unless you want to use your own VM-assembler translator from project 11.
+
+To use `VMTranslator.jar`, put your VM files in a folder, then run:
+
+```
+java -jar VMTranslator.jar [folder name]
+```
+{% endcomment %}
+
