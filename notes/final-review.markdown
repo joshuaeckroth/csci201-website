@@ -5,7 +5,7 @@ title: Final review (incomplete)
 
 # Final review (incomplete)
 
-The final exam will be on paper. You can bring a 5x7 notecard fill with notes front and back. You will see questions like you see on this review.
+The final exam will be on paper. You can bring a 5x7 inch notecard fill with notes front and back. You will see questions like you see on this review.
 
 ## Combinational logic
 
@@ -31,35 +31,61 @@ Using a RAM8 gate (and no other RAM gates), diagram a RAM32 gate. Label the othe
 
 Explain why we have Register gates in a modern machine and do not just use RAM for everything.
 
-## The whole computer
-
-(something about instruction decoding, sending to ALU, program counter, etc.)
-
 ## Assembly language
 
-Translate such-and-such assembly language commands to machine language.
+Write a chunk of assembly code that computes:
 
-Translate such-and-such machine language commands to assembly language.
+```
+if RAM[5] >= RAM[4] then
+    RAM[0] = -10
+else
+    RAM[0] = RAM[4] + RAM[5]
+end
+```
 
-## Assembler
+Give the value that RAM[0] contains after this code executes:
 
-(something about the translation process; labels, jumps)
-
-(implement certain algorithms in assembly language)
+```
+@2
+D=A
+@0
+MD=D-1
+A=D-1
+MA=M+1
+```
 
 ## VM language
 
-(questions about the stack)
+Assuming the stack pointer starts at 275, what is the value of the stack pointer (i.e., RAM[0]) after these operations:
 
-(questions about function calls and the stack manipulations involved)
+```
+push constant 0
+push constant 10
+push constant 20
+eq
+if-goto L1
+push constant 30
+add
+label L1
+pop local 1
+sub
+push constant 40
+neg
+push constant 50
+add
+```
 
-(implement certain algorithms in assemly language)
+Write the code needed to call the function `f1` with three arguments: 1, 5, 2.
 
-(translate some VM code to assembly)
+Write assembly code that performs the "push constant 20" operation.
 
-(translate some assembly to equivalent VM)
+Write assembly code that performs the "if-goto L1" operation.
 
 ## Grammars, lexers, parsers, tree visitors
+
+Describe the input and output of a "lexer."
+
+Describe the input and output of a tree visitor (for a translator, like we did for Sprinkles->VM).
 
 (design a grammar for very small syntax examples)
 
